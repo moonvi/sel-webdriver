@@ -32,7 +32,7 @@ namespace Litecart
 
                 string nextSubMenuXpath = NextSubMenuItemXpath;
 
-                while (IsElementExistsAndVisible(By.XPath(nextSubMenuXpath), driver))
+                while (IsElementExistsAndVisible(driver, By.XPath(nextSubMenuXpath)))
                 {
                     IWebElement subEl = driver.FindElement(By.XPath(nextSubMenuXpath));
                     subEl.Click();
@@ -40,7 +40,7 @@ namespace Litecart
                 }
 
                 currentXPath = NextMainMenuItemXpath;
-            } while (IsElementExistsAndVisible(By.XPath(currentXPath), driver));
+            } while (IsElementExistsAndVisible(driver, By.XPath(currentXPath)));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Litecart
         protected IWebDriver driver;
         protected WebDriverWait wait;
 
-        protected static bool IsElementExistsAndVisible(By locator, IWebDriver driver)
+        protected static bool IsElementExistsAndVisible(IWebDriver driver, By locator)
         {
             try
             {
@@ -25,6 +25,20 @@ namespace Litecart
                 return el.Displayed;
             }
             catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        protected static bool IsElementExistsAndVisible(IWebElement el, By locator)
+        {
+            try
+            {
+                el.FindElement(locator);
+
+                return el.Displayed;
+            }
+            catch
             {
                 return false;
             }
