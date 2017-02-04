@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "litecart", "litecart\litecart.csproj", "{345E429E-47BA-4C25-8F82-E9C302EF6480}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Litecart", "litecart\Litecart.csproj", "{345E429E-47BA-4C25-8F82-E9C302EF6480}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugApp", "DebugApp\DebugApp.csproj", "{DB90A720-EAE9-411C-9848-9CC57EB14E0F}"
 EndProject

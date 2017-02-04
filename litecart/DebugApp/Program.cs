@@ -1,4 +1,4 @@
-﻿using litecart;
+﻿using Litecart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace DebugApp
     {
         static void Main(string[] args)
         {
-            LoginPageTests c = new LoginPageTests();
+            AdminPageTests c = new AdminPageTests();
 
             c.start();
 

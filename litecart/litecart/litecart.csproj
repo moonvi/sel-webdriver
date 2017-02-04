@@ -6,8 +6,8 @@
     <ProjectGuid>{345E429E-47BA-4C25-8F82-E9C302EF6480}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>litecart</RootNamespace>
-    <AssemblyName>litecart</AssemblyName>
+    <RootNamespace>Litecart</RootNamespace>
+    <AssemblyName>Litecart</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -63,9 +63,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AdminPageTests.cs" />
     <Compile Include="LoginPage.cs" />
     <Compile Include="LoginPageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

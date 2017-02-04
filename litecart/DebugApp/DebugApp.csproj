@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\litecart\litecart.csproj">
+    <ProjectReference Include="..\litecart\Litecart.csproj">
       <Project>{345e429e-47ba-4c25-8f82-e9c302ef6480}</Project>
-      <Name>litecart</Name>
+      <Name>Litecart</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
