@@ -32,16 +32,22 @@ namespace Litecart
 
         protected static bool IsElementExistsAndVisible(IWebElement el, By locator)
         {
-            try
-            {
-                el.FindElement(locator);
+            return GetVisibleElementsCount(el, locator) > 0;
+        }
 
-                return el.Displayed;
-            }
-            catch
+        protected static int GetVisibleElementsCount(IWebElement el, By locator)
+        {
+            IList<IWebElement> subElements = el.FindElements(locator);
+            int subElQty = 0;
+
+            foreach (IWebElement subEl in subElements)
             {
-                return false;
+                if(subEl.Displayed)
+                {
+                    subElQty++;
+                }
             }
+            return subElQty;
         }
 
         [SetUp]

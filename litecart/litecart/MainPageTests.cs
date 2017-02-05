@@ -17,22 +17,22 @@ namespace Litecart
             MainPage HomePage = new MainPage(driver);
             HomePage.OpenMainPage();
 
-            string productXpath = "//li[@class='product column shadow hover-light']";
-            string stickerXpath = "//div[contains(@class,'sticker')]";
+            string productXpath = "//li[contains(@class,'product')]";
+            string stickerXpath = ".//div[contains(@class,'sticker')]";
            
             IList<IWebElement> products = driver.FindElements(By.XPath(productXpath));
 
-            bool allStickersPresented = true;
+            bool allProductsHaveOneSticker = true;
 
             foreach (IWebElement item in products)
             {
-                if (!IsElementExistsAndVisible(item, By.XPath(stickerXpath)))
+                if (GetVisibleElementsCount(item,By.XPath(stickerXpath))!=1)
                 {
-                    allStickersPresented = false;
+                    allProductsHaveOneSticker = false;
                     break;
                 }
             }
-            Assert.IsTrue(allStickersPresented);
+            Assert.IsTrue(allProductsHaveOneSticker);
         }
     }
 }
