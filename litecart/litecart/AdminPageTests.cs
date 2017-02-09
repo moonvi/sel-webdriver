@@ -58,11 +58,18 @@ namespace Litecart
 
             IList<IWebElement> countries = driver.FindElements(By.XPath(CountriesXpath));
 
+            List<string> countriesNames = new List<string>();
+
+            for (int i=0; i<countries.Count; i++)
+            {
+                countriesNames.Add(countries[i].Text);
+            }
+
             bool isSortingByAsc = true;
 
-            for (int i=0; i<countries.Count-1; i++)
+            for (int i=0; i<countriesNames.Count-1; i++)
             {
-                if(countries[i].Text.CompareTo(countries[i+1].Text)==1)
+                if(countriesNames[i].CompareTo(countriesNames[i+1])==1)
                 {
                     isSortingByAsc = false;
                     break;
