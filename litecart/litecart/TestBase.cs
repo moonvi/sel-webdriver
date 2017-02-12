@@ -52,6 +52,20 @@ namespace Litecart
             return subElQty;
         }
 
+        protected static void FillAutoComplete(IWebElement el, By inputActivatorLocator, By searchLocator, By selectItemLocator, string value)
+        {
+            el.FindElement(inputActivatorLocator).Click();
+            el.FindElement(searchLocator).SendKeys(value);
+            el.FindElement(selectItemLocator).Click();
+        }
+
+        protected void SelectDropdownValue(IWebElement el, By dropdownLocator, By selectItemLocator)
+        {
+            el.FindElement(dropdownLocator).Click();
+            wait.Until(ExpectedConditions.ElementExists(selectItemLocator));
+            el.FindElement(selectItemLocator).Click();
+        }
+
         [SetUp]
         public void start()
         {

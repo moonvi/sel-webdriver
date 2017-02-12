@@ -109,5 +109,94 @@ namespace Litecart
 
             Assert.Greater(productPageSpecPriceFontHeight, productPageRegPriceFontHeight);
         }
+
+        [Test]
+        public void RegisterNewUser()
+        {
+            const string NewCustomerLinkText = "New customers click here";
+            const string CreateAccountHeaderCssSelector = "h1.title";
+            const string CreateAccountFormXpath = "//form[@name='customer_form']";
+            const string CompanyFieldXpath = ".//td/input[@name='company']";
+            const string FNameFieldXpath = ".//td/input[@name='firstname']";
+            const string LNameFieldXpath = ".//td/input[@name='lastname']";
+            const string Address1FieldXpath = ".//td/input[@name='address1']";
+            const string PostcodeFieldXpath = ".//td/input[@name='postcode']";
+            const string CityFieldXpath = ".//td/input[@name='city']";
+            const string CountrySelectXpath = ".//td/span[contains(@class,'select2')]";
+            const string CountrySearchXpath = "//input[@class='select2-search__field']";
+            const string CountryNameXpath = "//span[contains(@class,'select2-results')]/ul/li[1]";
+            const string ZoneSelectXpath = ".//td/select[@name='zone_code']";
+            const string ZoneNameXpathFormat = ".//td/select[@name='zone_code']/option[@value='{0}']";
+            const string EmailFieldXpath = ".//td/input[@name='email']";
+            const string PhoneFieldXpath = ".//td/input[@name='phone']";
+            const string PassXpath = ".//td/input[@name='password']";
+            const string ConfirmPassXpath = ".//td/input[@name='confirmed_password']";
+            const string SubmitButtonXpath = ".//button[@name='create_account']";
+            const string LogoutTextLink = "Logout";
+
+            //Login
+            const string LoginHeaderCssSelector = "h3.title";
+            const string LoginFormXpath = "//div[@id='box-account-login']";
+            const string LoginEmailAddressXpath = ".//input[@name='email']";
+            const string LoginPasswordXpath = ".//input[@name='password']";
+            const string LoginButtonXpath = ".//button[@name='login']";
+
+            //Test data
+            const string Company = "Sherlock and Co.";
+            const string FName = "Sherlock";
+            const string LName = "Holmes";
+            const string Address1 = "221B Baker Street";
+            const string Postcode = "92626";
+            const string City = "Costa Mesa";
+            const string Country = "United States";
+            const string PhoneNumber = "+1-541-754-3010";
+            const string Pass = "Password@123";
+            const string EmailFormatString = "user{0}@email.com";
+            string UserEmail = string.Format(EmailFormatString, RandomGenerator.GetTimeBasedRndNum().ToString());
+
+            MainPage HomePage = new MainPage(driver);
+            HomePage.OpenMainPage();
+
+            IWebElement createAccountLink = driver.FindElement(By.LinkText(NewCustomerLinkText));
+            createAccountLink.Click();
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(CreateAccountHeaderCssSelector)));
+
+            IWebElement createAccountForm = driver.FindElement(By.XPath(CreateAccountFormXpath));
+
+            createAccountForm.FindElement(By.XPath(CompanyFieldXpath)).SendKeys(Company);
+            createAccountForm.FindElement(By.XPath(FNameFieldXpath)).SendKeys(FName);
+            createAccountForm.FindElement(By.XPath(LNameFieldXpath)).SendKeys(LName);
+            createAccountForm.FindElement(By.XPath(Address1FieldXpath)).SendKeys(Address1);
+            createAccountForm.FindElement(By.XPath(PostcodeFieldXpath)).SendKeys(Postcode);
+            createAccountForm.FindElement(By.XPath(CityFieldXpath)).SendKeys(City);
+
+            FillAutoComplete(createAccountForm, By.XPath(CountrySelectXpath), 
+                By.XPath(CountrySearchXpath), By.XPath(CountryNameXpath), Country);
+
+            string californiaValueXpath = string.Format(ZoneNameXpathFormat,"CA"); //state = California
+            SelectDropdownValue(createAccountForm, By.XPath(ZoneSelectXpath), By.XPath(californiaValueXpath));
+
+            createAccountForm.FindElement(By.XPath(EmailFieldXpath))
+                .SendKeys(UserEmail);
+            createAccountForm.FindElement(By.XPath(PhoneFieldXpath)).SendKeys(PhoneNumber);
+            createAccountForm.FindElement(By.XPath(PassXpath)).SendKeys(Pass);
+            createAccountForm.FindElement(By.XPath(ConfirmPassXpath)).SendKeys(Pass);
+            createAccountForm.FindElement(By.XPath(SubmitButtonXpath)).Click();
+            wait.Until(ExpectedConditions.ElementExists(By.LinkText(LogoutTextLink)));
+
+            IWebElement userLogout = driver.FindElement(By.LinkText(LogoutTextLink));
+            userLogout.Click();
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(LoginHeaderCssSelector)));
+
+            IWebElement loginForm = driver.FindElement(By.XPath(LoginFormXpath));
+            loginForm.FindElement(By.XPath(LoginEmailAddressXpath)).SendKeys(UserEmail);
+            loginForm.FindElement(By.XPath(LoginPasswordXpath)).SendKeys(Pass);
+            loginForm.FindElement(By.XPath(LoginButtonXpath)).Click();
+            wait.Until(ExpectedConditions.ElementExists(By.LinkText(LogoutTextLink)));
+
+            IWebElement secondLogout = driver.FindElement(By.LinkText(LogoutTextLink));
+            secondLogout.Click();
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(LoginHeaderCssSelector)));
+        }
     }
 }
