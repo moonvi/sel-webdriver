@@ -66,6 +66,13 @@ namespace Litecart
             el.FindElement(selectItemLocator).Click();
         }
 
+        protected void SelectDropdownValue(IWebDriver driver, By dropdownLocator, By selectItemLocator)
+        {
+            driver.FindElement(dropdownLocator).Click();
+            wait.Until(ExpectedConditions.ElementExists(selectItemLocator));
+            driver.FindElement(selectItemLocator).Click();
+        }
+
         [SetUp]
         public void start()
         {
