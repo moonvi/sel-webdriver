@@ -170,10 +170,10 @@ namespace Litecart
             createAccountForm.FindElement(By.XPath(PostcodeFieldXpath)).SendKeys(Postcode);
             createAccountForm.FindElement(By.XPath(CityFieldXpath)).SendKeys(City);
 
-            FillAutoComplete(createAccountForm, By.XPath(CountrySelectXpath), 
+            FillAutoComplete(createAccountForm, By.XPath(CountrySelectXpath),
                 By.XPath(CountrySearchXpath), By.XPath(CountryNameXpath), Country);
 
-            string californiaValueXpath = string.Format(ZoneNameXpathFormat,"CA"); //state = California
+            string californiaValueXpath = string.Format(ZoneNameXpathFormat, "CA"); //state = California
             SelectDropdownValue(createAccountForm, By.XPath(ZoneSelectXpath), By.XPath(californiaValueXpath));
 
             createAccountForm.FindElement(By.XPath(EmailFieldXpath))
@@ -197,6 +197,100 @@ namespace Litecart
             IWebElement secondLogout = driver.FindElement(By.LinkText(LogoutTextLink));
             secondLogout.Click();
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector(LoginHeaderCssSelector)));
+        }
+
+        [Test]
+        public void CheckAddRemoveProductsFromBasket()
+        {
+            const string FirstPopularProductXpath = "//div[@id='box-most-popular']//li[1]/a[1]";
+            const string AddToCartXpath = "//button[@type='submit'][@name='add_cart_product']";
+            const string SelectElementXpath = "//select[@name='options[Size]']";
+            const string SelectItemXpath = "//option[@value='Small']";
+            const string CartQuantityXpath = "//div[@id='cart']/a[2]/span[contains(@class,'quantity')]";
+            const string HomePageXpath = "//nav[@id='site-menu']//li[contains(@class,'general-0')]";
+            const string MostPopularXpath = "//div[@id='box-most-popular']";
+            const string CheckoutXpath = "//div[@id='cart']/a[@class='link']";
+            const string OrderSummaryXpath = "//h2[@class='title']";
+            const string MiniItemsInCartXpath = "//ul[contains(@class,'shortcuts')]/li[contains(@class,'shortcut')]";
+            const string MiniItemsPanelXpath = "//ul[contains(@class,'shortcuts')]";
+            const string FirstMiniItemInCartXpath = "//ul[contains(@class,'shortcuts')]/li[1]/a";
+            const string RemoveButtonXpath = "//div[contains(@class,'viewport')]/ul/li[1]//button[@name='remove_cart_item']";
+            const string BackLinkXpath = "//a[contains(text(),'<< Back')]";
+
+            //item name in basket
+            const string CartItemNameXpath = "//div[contains(@class,'viewport')]/ul/li[1]//strong";
+            
+            //item name in Order Summary
+            const string ProductNameInSummaryXpathFormat = "//table/tbody//td[contains(text(),'{0}')]";
+
+            MainPage HomePage = new MainPage(driver);
+            HomePage.OpenMainPage();
+
+            IWebElement cartQuantity = driver.FindElement(By.XPath(CartQuantityXpath));
+            string defaultQuantity = cartQuantity.GetAttribute("outerText");
+            Assert.AreEqual("0", defaultQuantity);
+
+            string nextItemCartQuantity = "";
+            int i = 1;
+
+            do
+            {
+                IWebElement firstPopularProduct = driver.FindElement(By.XPath(FirstPopularProductXpath));
+                firstPopularProduct.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.XPath(ProductNameXpath)));
+
+                IWebElement addToCart = driver.FindElement(By.XPath(AddToCartXpath));
+
+                if (IsElementExistsAndVisible(driver, By.XPath(SelectElementXpath)))
+                {
+                    SelectDropdownValue(driver, By.XPath(SelectElementXpath), By.XPath(SelectItemXpath));
+                }
+                addToCart.Click();
+
+                wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(CartQuantityXpath)));
+
+                IWebElement updatedCartQuantity = driver.FindElement(By.XPath(CartQuantityXpath));
+                wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath(CartQuantityXpath), i.ToString()));
+                nextItemCartQuantity = updatedCartQuantity.GetAttribute("outerText");
+                Assert.AreEqual(i.ToString(), nextItemCartQuantity);
+
+                IWebElement generalMenu = driver.FindElement(By.XPath(HomePageXpath));
+                generalMenu.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.XPath(MostPopularXpath)));
+
+                i++;
+            } while (nextItemCartQuantity != "3");
+
+            IWebElement cart = driver.FindElement(By.XPath(CheckoutXpath));
+            cart.Click();
+            wait.Until(ExpectedConditions.ElementExists(By.XPath(OrderSummaryXpath)));
+
+            int miniItemsQty = driver.FindElements(By.XPath(MiniItemsInCartXpath)).Count;
+            int j = 1;
+
+            while (j <= miniItemsQty)
+            {
+                if (j < miniItemsQty)
+                {
+                    IWebElement firstItemInCart = driver.FindElement(By.XPath(FirstMiniItemInCartXpath));
+                    firstItemInCart.Click();
+                    wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(MiniItemsPanelXpath)));
+                }
+
+                string cartProductName = driver.FindElement(By.XPath(CartItemNameXpath)).GetAttribute("outerText");
+                string productNameInSummaryXpath = string.Format(ProductNameInSummaryXpathFormat, cartProductName);
+
+                IWebElement removeButton = driver.FindElement(By.XPath(RemoveButtonXpath));
+                removeButton.Click();
+
+                if (j < miniItemsQty)
+                {
+                    wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.XPath(productNameInSummaryXpath)));
+                }
+                
+                j++;
+            }
+            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(BackLinkXpath)));
         }
     }
 }
