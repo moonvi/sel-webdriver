@@ -12,7 +12,8 @@ namespace Litecart
     [TestFixture]
     public class AdminPageTests : TestBase
     {
-        const string HeaderCssSelector = "td#content h1";
+        private const string HeaderCssSelector = "td#content h1";
+        private const string CountriesMenuXpath = "//ul[@id='box-apps-menu']/li[3]";
 
         [Test]
         public void CheckMenuHeadersPresented()
@@ -49,7 +50,6 @@ namespace Litecart
         [Test]
         public void CheckCountriesAlphabeticallySorted()
         {
-            const string CountriesMenuXpath = "//ul[@id='box-apps-menu']/li[3]";
             const string CountriesXpath = "//table[@class='dataTable']/tbody/tr[@class='row']/td[5]";
 
             LoginPage UserLogin = new LoginPage(driver);
@@ -62,16 +62,16 @@ namespace Litecart
 
             List<string> countriesNames = new List<string>();
 
-            for (int i=0; i<countries.Count; i++)
+            for (int i = 0; i < countries.Count; i++)
             {
                 countriesNames.Add(countries[i].Text);
             }
 
             bool isSortingByAsc = true;
 
-            for (int i=0; i<countriesNames.Count-1; i++)
+            for (int i = 0; i < countriesNames.Count - 1; i++)
             {
-                if(countriesNames[i].CompareTo(countriesNames[i+1])==1)
+                if (countriesNames[i].CompareTo(countriesNames[i + 1]) == 1)
                 {
                     isSortingByAsc = false;
                     break;
@@ -95,7 +95,7 @@ namespace Litecart
 
             IList<IWebElement> zones = driver.FindElements(By.XPath(ZonesNotNullXpath));
 
-            for(int i=0; i<zones.Count;i++)
+            for (int i = 0; i < zones.Count; i++)
             {
                 zones[i].FindElement(By.XPath(CountriesXpath)).Click();
                 wait.Until(ExpectedConditions.ElementExists(By.XPath(ZoneNameXpath)));
@@ -213,7 +213,7 @@ namespace Litecart
             const string MetaDescription = "Test meta description";
             const string PurchasePrice = "15.50";
             const string PriceUSD = "25";
-            const string PriceEUR = "28";          
+            const string PriceEUR = "28";
 
             LoginPage UserLogin = new LoginPage(driver);
             UserLogin.Login(Settings.AdminName, Settings.AdminPassword, true);
@@ -230,7 +230,7 @@ namespace Litecart
             IWebElement generalTab = driver.FindElement(By.XPath(GeneralTabXpath));
             generalTab.Click();
             wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(ProductEnableXpath)));
-                  
+
             driver.FindElement(By.XPath(ProductEnableXpath)).Click();
             driver.FindElement(By.XPath(ProdNameXpath)).SendKeys(ProductName);
             driver.FindElement(By.XPath(ProdCodeXpath)).SendKeys(ProductCode);
@@ -279,7 +279,7 @@ namespace Litecart
 
             IWebElement saveProduct = driver.FindElement(By.XPath(SaveButtonXpath));
             saveProduct.Click();
-                        
+
             //Check that product is created
             IWebElement catalogMenuWithProducts = driver.FindElement(By.XPath(CatalogMenuSelectedXpath));
             catalogMenuWithProducts.Click();
@@ -295,6 +295,42 @@ namespace Litecart
             }
 
             Assert.Contains(ProductName, productNames);
+
+        }
+
+        [Test]
+        public void CheckLinksOpenedInNewWindow()
+        {
+            const string EditCountryXpath = "//table[@class='dataTable']/tbody/tr[@class='row']/td[7]";
+            const string EditLinkXpath = "./a";
+            const string EditCountryHeaderXpath = "//h1[contains(text(),'Edit Country')]";
+            const string ExternalLinksXpath = "//form/table//a[contains(@target,'_blank')]";
+
+            LoginPage UserLogin = new LoginPage(driver);
+            UserLogin.Login(Settings.AdminName, Settings.AdminPassword, true);
+
+            IWebElement countriesMenu = driver.FindElement(By.XPath(CountriesMenuXpath));
+            countriesMenu.Click();
+
+            IWebElement editCountryIcon = driver.FindElement(By.XPath(EditCountryXpath));
+            editCountryIcon.FindElement(By.XPath(EditLinkXpath)).Click();
+            wait.Until(ExpectedConditions.ElementExists(By.XPath(EditCountryHeaderXpath)));
+
+            IList<IWebElement> externalLinks = driver.FindElements(By.XPath(ExternalLinksXpath));
+
+            for (int j = 0; j < externalLinks.Count; j++)
+            {
+                string mainWindow = driver.CurrentWindowHandle;
+                IReadOnlyList<string> oldWindows = driver.WindowHandles;
+
+                externalLinks[j].Click();
+                string newWindow = wait.Until((d) => ThereIsWindowOtherThan(oldWindows));
+                driver.SwitchTo().Window(newWindow);
+                driver.Close();
+                driver.SwitchTo().Window(mainWindow);
+            }
+            driver.FindElement(By.XPath(CountriesMenuXpath)).Click();
+            //editCountryIcon = driver.FindElement(By.XPath(EditCountryXpath));
 
         }
     }
