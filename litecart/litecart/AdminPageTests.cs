@@ -330,8 +330,6 @@ namespace Litecart
                 driver.SwitchTo().Window(mainWindow);
             }
             driver.FindElement(By.XPath(CountriesMenuXpath)).Click();
-            //editCountryIcon = driver.FindElement(By.XPath(EditCountryXpath));
-
         }
     }
 }
