@@ -15,7 +15,7 @@ namespace DebugApp
 
             c.start();
 
-            c.CheckLinksOpenedInNewWindow();
+            c.CheckBrowserLogsOnProductPageInAdmin();
 
             c.stop();
 

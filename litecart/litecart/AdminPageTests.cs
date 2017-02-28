@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -14,6 +15,7 @@ namespace Litecart
     {
         private const string HeaderCssSelector = "td#content h1";
         private const string CountriesMenuXpath = "//ul[@id='box-apps-menu']/li[3]";
+        private const string CatalogueMenuXpath = "//ul[@id='box-apps-menu']/li[2]";
 
         [Test]
         public void CheckMenuHeadersPresented()
@@ -330,6 +332,51 @@ namespace Litecart
                 driver.SwitchTo().Window(mainWindow);
             }
             driver.FindElement(By.XPath(CountriesMenuXpath)).Click();
+        }
+
+        [Test]
+        public void CheckBrowserLogsOnProductPageInAdmin()
+        {
+            const string TableRowXpath = "//table/tbody/tr[contains(@class,'row')][{0}]";
+            const string ClosedFolderXpath = ".//td[3]/i[contains(@class,'fa-folder') and not(contains(@class,'open'))]/parent::*//a";
+            const string OpenedFolderXpath = ".//td[3]/i[contains(@class,'open')]/parent::*//a";
+            const string ProductXpath = ".//td[3]/a[contains(@href,'product_id')]";
+            const string CancelButtonXpath = "//button[@name='cancel']";
+
+            LoginPage UserLogin = new LoginPage(driver);
+            UserLogin.Login(Settings.AdminName, Settings.AdminPassword, true);
+
+            IWebElement catalogueMenu = driver.FindElement(By.XPath(CatalogueMenuXpath));
+            catalogueMenu.Click();
+
+            int i = 1;
+
+            IWebElement currentRow;
+            string currentRowLocator = string.Format(TableRowXpath, i);
+            while(TryFindElement(driver, By.XPath(currentRowLocator), out currentRow))
+            {
+                IWebElement folder;
+                IWebElement product;
+                if(TryFindElement(currentRow, By.XPath(ClosedFolderXpath), out folder))
+                {
+                    folder.Click();
+                    wait.Until(ExpectedConditions.ElementExists(By.XPath(OpenedFolderXpath)));
+                }
+                else if (TryFindElement(currentRow, By.XPath(ProductXpath),out product))
+                {
+                    product.Click();
+                    foreach (LogEntry l in driver.Manage().Logs.GetLog("browser"))
+                    {
+                        Console.WriteLine(l);
+                    }
+                    wait.Until(ExpectedConditions.ElementExists(By.XPath(CancelButtonXpath))).Click();
+
+                }
+
+                i++;
+                currentRowLocator = string.Format(TableRowXpath, i);
+              
+            }
         }
     }
 }

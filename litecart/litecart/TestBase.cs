@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,12 +12,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Support.Events;
 
 namespace Litecart
 {
     public class TestBase
     {
-        protected IWebDriver driver;
+        protected EventFiringWebDriver driver;
         protected WebDriverWait wait;
 
         protected static bool IsElementExistsAndVisible(IWebDriver driver, By locator)
@@ -36,6 +38,34 @@ namespace Litecart
         protected static bool IsElementExistsAndVisible(IWebElement el, By locator)
         {
             return GetVisibleElementsCount(el, locator) > 0;
+        }
+
+        protected static bool TryFindElement(IWebDriver driver, By locator, out IWebElement el)
+        {
+            el = null;
+            try
+            {
+                el = driver.FindElement(locator);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        protected static bool TryFindElement(IWebElement context, By locator, out IWebElement el)
+        {
+            el = null;
+            try
+            {
+                el = context.FindElement(locator);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
 
         protected static int GetVisibleElementsCount(IWebElement el, By locator)
@@ -110,9 +140,13 @@ namespace Litecart
         [SetUp]
         public void start()
         {
-            driver = new ChromeDriver();
+            driver = new EventFiringWebDriver(new ChromeDriver());
+            driver.FindingElement += (sender,e) => Console.WriteLine(e.FindMethod);
+            driver.FindElementCompleted += (sender, e) => Console.WriteLine(e.FindMethod + " found");
+            driver.ExceptionThrown += (sender, e) => Console.WriteLine(e.ThrownException);
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
+
 
         [TearDown]
         public void stop()
