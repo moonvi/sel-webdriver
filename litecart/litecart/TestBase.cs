@@ -6,6 +6,7 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -44,7 +45,7 @@ namespace Litecart
 
             foreach (IWebElement subEl in subElements)
             {
-                if(subEl.Displayed)
+                if (subEl.Displayed)
                 {
                     subElQty++;
                 }
@@ -65,6 +66,46 @@ namespace Litecart
             wait.Until(ExpectedConditions.ElementExists(selectItemLocator));
             el.FindElement(selectItemLocator).Click();
         }
+
+        protected void SelectDropdownValue(IWebDriver driver, By dropdownLocator, By selectItemLocator)
+        {
+            driver.FindElement(dropdownLocator).Click();
+            wait.Until(ExpectedConditions.ElementExists(selectItemLocator));
+            driver.FindElement(selectItemLocator).Click();
+        }
+
+        protected string ThereIsWindowOtherThan(IReadOnlyList<string> oldWindows)
+        {
+            string newWindow = null;
+            
+            IReadOnlyList<string> allWindowHandles = driver.WindowHandles;
+
+            for (int i = 0; i < allWindowHandles.Count; i++)
+            {
+                if (!Contains(allWindowHandles[i], oldWindows))
+                {
+                    newWindow = allWindowHandles[i];
+                    break;
+                }
+            }
+            return newWindow;
+        }
+
+        public bool Contains(string el, IReadOnlyList<string> collection)
+        {
+            bool contains = false;
+
+            for (int j = 0; j < collection.Count; j++)
+            {
+                if (el.Equals(collection[j]))
+                {
+                    contains = true;
+                    break;
+                }
+            }
+            return contains;
+        }
+
 
         [SetUp]
         public void start()

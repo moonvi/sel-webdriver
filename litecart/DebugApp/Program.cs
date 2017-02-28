@@ -11,11 +11,11 @@ namespace DebugApp
     {
         static void Main(string[] args)
         {
-           MainPageTests c = new MainPageTests();
+            AdminPageTests c = new AdminPageTests();
 
             c.start();
 
-            c.CheckSpecPriceGreaterThanPegular();
+            c.CheckLinksOpenedInNewWindow();
 
             c.stop();
 

@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 
 namespace Task1
 {
@@ -15,7 +16,9 @@ namespace Task1
         [SetUp]
         public void start()
         {
-            driver = new ChromeDriver();
+            //driver = new ChromeDriver();
+            //driver = new RemoteWebDriver(new Uri("http://192.168.0.107:4444/wd/hub"), DesiredCapabilities.Chrome());
+            driver = new RemoteWebDriver(new Uri("http://192.168.0.107:4444/wd/hub"), DesiredCapabilities.InternetExplorer());
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
         
