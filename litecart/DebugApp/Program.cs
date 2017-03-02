@@ -11,11 +11,11 @@ namespace DebugApp
     {
         static void Main(string[] args)
         {
-            AdminPageTests c = new AdminPageTests();
+            MainPageTests c = new MainPageTests();
 
             c.start();
 
-            c.CheckBrowserLogsOnProductPageInAdmin();
+            c.CheckAddRemoveProductsFromBasket();
 
             c.stop();
 

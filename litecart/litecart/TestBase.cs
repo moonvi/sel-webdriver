@@ -18,7 +18,7 @@ namespace Litecart
 {
     public class TestBase
     {
-        protected EventFiringWebDriver driver;
+        protected IWebDriver driver;
         protected WebDriverWait wait;
 
         protected static bool IsElementExistsAndVisible(IWebDriver driver, By locator)
@@ -140,10 +140,7 @@ namespace Litecart
         [SetUp]
         public void start()
         {
-            driver = new EventFiringWebDriver(new ChromeDriver());
-            driver.FindingElement += (sender,e) => Console.WriteLine(e.FindMethod);
-            driver.FindElementCompleted += (sender, e) => Console.WriteLine(e.FindMethod + " found");
-            driver.ExceptionThrown += (sender, e) => Console.WriteLine(e.ThrownException);
+            driver = new ChromeDriver();
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
 

@@ -64,10 +64,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AdminPageTests.cs" />
+    <Compile Include="BaseUIOperations.cs" />
+    <Compile Include="CartPage.cs" />
     <Compile Include="LoginPage.cs" />
     <Compile Include="LoginPageTests.cs" />
     <Compile Include="MainPage.cs" />
     <Compile Include="MainPageTests.cs" />
+    <Compile Include="ProductPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="Settings.cs" />
